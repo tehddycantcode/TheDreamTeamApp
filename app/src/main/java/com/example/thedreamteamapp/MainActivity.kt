@@ -75,6 +75,9 @@ class MainActivity : ComponentActivity() {
                         composable("edward") {
                             EdwardProfileScreen()
                         }
+                        composable("mollejon") {
+                            MollejonProfileScreen()
+                        }
                     }
                 }
             }
@@ -151,9 +154,9 @@ fun DreamTeamScreen(navController: NavHostController) {
                     onClick = { }
                 )
                 ProfileNavButton(
-                    name = "Student 4",
-                    subtitle = "Bio Screen 4",
-                    imageRes = android.R.drawable.ic_menu_gallery,
+                    name = "Israel Mollejon",
+                    subtitle = "Feature Developer",
+                    imageRes = R.drawable.israelmollejonpic,
                     accentColor = Color(0xFF10B981),
                     onClick = { }
                 )
