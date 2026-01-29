@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
                         composable("clarence") { ClarenceProfileScreen() }
                         composable("mollejon") { MollejonProfileScreen() }
                         composable("radyn") { MalolesProfileScreen() }
-                        composable("shania") { MagdaProfileScreen() }
                     }
                 }
             }

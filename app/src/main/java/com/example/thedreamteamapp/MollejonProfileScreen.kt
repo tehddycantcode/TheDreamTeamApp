@@ -56,7 +56,7 @@ fun MollejonProfileScreen() {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.israelmollejonpic),
-                    contentDescription = "Israel Picture",
+                contentDescription = "Israel Picture",
                 modifier = Modifier.matchParentSize(),
                 contentScale = ContentScale.Crop
             )
