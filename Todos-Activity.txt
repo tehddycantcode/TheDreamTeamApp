@@ -1,0 +1,1145 @@
+Task: Enhance the User List App with Todo Details Feature
+Requirements:
+1. Add a clickable card for each user in the list
+2. When a user card is tapped, navigate to a Todo Screen that displays that user's todos
+3. Show a Loading Screen while fetching the todos
+4. Display todos in a LazyColumn for performance
+5. Add a back button to return to the user list
+6. Use Material Icons (https://fonts.google.com/icons) for better UI (checkbox icons for todo completion status and user information)
+7. Implement proper state management using sealed classes and StateFlow
+8. Handle errors gracefully with an error screen
+
+
+MainActivity.kt
+package com.example.todos
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import com.example.todos.ui.screens.MainScreen
+
+/**
+ * Main Activity - Entry point of the app
+ * Uses Jetpack Compose for UI instead of XML layouts
+ */
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Enable edge-to-edge display (draws behind system bars)
+        enableEdgeToEdge()
+
+        // setContent is the Compose way of setting the UI
+        // Replaces setContentView(R.layout.activity_main)
+        setContent {
+            // MaterialTheme provides Material Design 3 theming
+            MaterialTheme {
+                // Surface is a container with background color
+                Surface {
+                    // Display the main screen
+                    MainScreen()
+                }
+            }
+        }
+    }
+}
+
+
+ic_launcher_background.xml
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#3DDC84"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M9,0L9,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,0L19,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M29,0L29,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M39,0L39,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M49,0L49,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M59,0L59,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M69,0L69,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M79,0L79,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M89,0L89,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M99,0L99,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,9L108,9"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,19L108,19"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,29L108,29"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,39L108,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,49L108,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,59L108,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,69L108,69"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,79L108,79"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,89L108,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,99L108,99"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,29L89,29"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,39L89,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,49L89,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,59L89,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,69L89,69"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,79L89,79"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M29,19L29,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M39,19L39,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M49,19L49,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M59,19L59,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M69,19L69,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M79,19L79,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+</vector>
+
+
+
+
+ic_launcher_foreground.xml
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="85.84757"
+                android:endY="92.4963"
+                android:startX="42.9492"
+                android:startY="49.59793"
+                android:type="linear">
+                <item
+                    android:color="#44000000"
+                    android:offset="0.0" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
+        android:strokeWidth="1"
+        android:strokeColor="#00000000" />
+</vector>
+
+
+
+ic_launcher.xml
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+
+
+ic_launcher_round.xml
+package com.example.todos
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import com.example.todos.ui.screens.MainScreen
+
+/**
+ * Main Activity - Entry point of the app
+ * Uses Jetpack Compose for UI instead of XML layouts
+ */
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Enable edge-to-edge display (draws behind system bars)
+        enableEdgeToEdge()
+
+        // setContent is the Compose way of setting the UI
+        // Replaces setContentView(R.layout.activity_main)
+        setContent {
+            // MaterialTheme provides Material Design 3 theming
+            MaterialTheme {
+                // Surface is a container with background color
+                Surface {
+                    // Display the main screen
+                    MainScreen()
+                }
+            }
+        }
+    }
+}
+
+data_extraction_rules.xml
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
+    </cloud-backup>
+    <!--
+    <device-transfer>
+        <include .../>
+        <exclude .../>
+    </device-transfer>
+    -->
+</data-extraction-rules>
+
+
+
+backup_rules.xml
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample backup rules file; uncomment and customize as necessary.
+   See https://developer.android.com/guide/topics/data/autobackup
+   for details.
+   Note: This file is ignored for devices older than API 31
+   See https://developer.android.com/about/versions/12/backup-restore
+-->
+<full-backup-content>
+    <!--
+   <include domain="sharedpref" path="."/>
+   <exclude domain="sharedpref" path="device.xml"/>
+-->
+</full-backup-content>
+
+
+build.gradle.kts
+import org.jetbrains.kotlin. gradle.dsl.JvmTarget
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
+
+android {
+    namespace = "com.example.todos"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.example.todos"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx. test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+// Set Kotlin compiler options at the top level
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
+}
+
+dependencies {
+    // Compose BOM (Bill of Materials)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+
+    // Core Android
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Compose
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
+
+    // ViewModel & Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Material Icons
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // OkHttp
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    // androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    // Debug
+    // debugImplementation(libs.androidx.compose.ui.tooling)
+    // debugImplementation(libs.androidx.compose.ui.test.manifest)
+}
+
+
+
+libs.versions.toml
+[versions]
+agp = "8.12.0"
+kotlin = "2.3.0"
+coreKtx = "1.17.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.2"
+composeBom = "2026.01.00"
+retrofit = "3.0.0"
+okhttp = "5.3.2"
+coroutines = "1.10.2"
+materialIconsExtended = "1.7.8"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version. ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version. ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version. ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version. ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+
+
+User.kt
+package com.example.todos.data.model
+
+import com.google.gson.annotations.SerializedName
+
+/**
+ * Data class representing a User from JSONPlaceholder API
+ * Uses @SerializedName for proper JSON parsing with Gson
+ */
+data class User(
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("username")
+    val username: String,
+
+    @SerializedName("email")
+    val email: String,
+
+    @SerializedName("address")
+    val address: Address,
+
+    @SerializedName("phone")
+    val phone: String,
+
+    @SerializedName("website")
+    val website: String,
+
+    @SerializedName("company")
+    val company: Company
+)
+
+/**
+ * Nested data class for user's address
+ */
+data class Address(
+    @SerializedName("street")
+    val street: String,
+
+    @SerializedName("suite")
+    val suite: String,
+
+    @SerializedName("city")
+    val city: String,
+
+    @SerializedName("zipcode")
+    val zipcode: String,
+
+    @SerializedName("geo")
+    val geo: Geo
+)
+
+/**
+ * Nested data class for geographical coordinates
+ */
+data class Geo(
+    @SerializedName("lat")
+    val lat: String,
+
+    @SerializedName("lng")
+    val lng: String
+)
+
+/**
+ * Nested data class for user's company
+ */
+data class Company(
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("catchPhrase")
+    val catchPhrase:  String,
+
+    @SerializedName("bs")
+    val bs: String
+)
+
+ApiService.kt
+package com.example.todos.data.remote
+
+import com.example.todos.data.model.User
+import retrofit2.Response
+import retrofit2.http.GET
+
+/**
+ * Retrofit API interface for JSONPlaceholder endpoints
+ */
+interface ApiService {
+
+    /**
+     * Fetches all users from the /users endpoint
+     * @return Response containing a list of User objects
+     */
+    @GET("users")
+    suspend fun getUsers(): Response<List<User>>
+}
+
+
+RetrofitClient.kt
+package com.example.todos.data.remote
+
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson. GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+/**
+ * Singleton object to provide Retrofit instance
+ */
+object RetrofitClient {
+
+    // Base URL for JSONPlaceholder API
+    private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+
+    /**
+     * Creates an OkHttpClient with logging interceptor for debugging
+     * and timeout configurations
+     */
+    private val okHttpClient: OkHttpClient by lazy {
+
+        OkHttpClient.Builder()
+            . connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
+            .readTimeout(30, TimeUnit.SECONDS) // Read timeout
+            .writeTimeout(30, TimeUnit.SECONDS) // Write timeout
+            . build()
+    }
+
+    /**
+     * Lazy initialization of Retrofit instance
+     * Uses Gson converter for JSON parsing
+     */
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL) // Set base URL
+            .client(okHttpClient) // Set custom OkHttpClient
+            .addConverterFactory(GsonConverterFactory.create()) // Add Gson converter
+            .build()
+    }
+
+    /**
+     * Provides the ApiService implementation
+     * This is the main entry point for making API calls
+     */
+    val apiService: ApiService by lazy {
+        retrofit.create(ApiService:: class.java)
+    }
+}
+
+
+UserRepository.kt
+package com.example.todos.data.repository
+
+import com.example.todos.data.model.User
+import com.example.todos.data.remote.RetrofitClient
+import kotlinx.coroutines. Dispatchers
+import kotlinx.coroutines.withContext
+
+/**
+ * Repository class to handle data operations
+ * Acts as a single source of truth for user data
+ * Separates the data layer from the UI layer
+ */
+class UserRepository {
+
+    // API service instance from RetrofitClient
+    private val apiService = RetrofitClient.apiService
+
+    /**
+     * Fetches users from the API
+     * Uses withContext(Dispatchers.IO) to ensure network call happens on IO thread
+     *
+     * @return Result<List<User>> - Success with user list or Failure with exception
+     */
+    suspend fun getUsers(): Result<List<User>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Make the API call
+                val response = apiService.getUsers()
+
+                // Check if response is successful (HTTP 200-299)
+                if (response. isSuccessful) {
+                    // Get the body of response (list of users)
+                    val users = response.body()
+
+                    // If body is not null, return success
+                    if (users != null) {
+                        Result.success(users)
+                    } else {
+                        // Body is null, return failure
+                        Result.failure(Exception("Empty response body"))
+                    }
+                } else {
+                    // HTTP error (4xx, 5xx)
+                    Result.failure(Exception("HTTP Error: ${response.code()} - ${response.message()}"))
+                }
+            } catch (e:  Exception) {
+                // Network error, timeout, or parsing error
+                Result.failure(e)
+            }
+        }
+    }
+}
+
+
+UserState.kt
+package com.example.todos.domain
+
+import com.example.todos.data.model.User
+
+/**
+ * Sealed class representing different states of the user list screen
+ * Sealed classes are perfect for representing a finite set of states
+ * Each state can carry different data
+ */
+sealed class UserState {
+
+    /**
+     * Initial/Loading state - shown when data is being fetched
+     */
+    data object Loading : UserState()
+
+    /**
+     * Success state - shown when data is successfully loaded
+     * @param users List of User objects to display
+     */
+    data class Success(val users: List<User>) : UserState()
+
+    /**
+     * Error state - shown when an error occurs
+     * @param message Error message to display to the user
+     */
+    data class Error(val message: String) : UserState()
+}
+
+
+
+screens/ErrorScreen.kt
+package com.example.todos.ui.screens
+
+import androidx.compose. foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation. layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose. foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx. compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+/**
+ * Separate composable for Error screen
+ * Displays error message with retry button
+ *
+ * @param message Error message to display
+ * @param onRetry Callback function when retry button is clicked
+ */
+@Composable
+fun ErrorScreen(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Box centers content in the middle of the screen
+    Box(
+        modifier = modifier. fillMaxSize(), // Fill entire screen
+        contentAlignment = Alignment. Center // Center content
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp), // Padding around content
+            horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
+        ) {
+            // Error icon (warning symbol)
+            Icon(
+                imageVector = Icons.Default. Warning, // Material warning icon
+                contentDescription = "Error",
+                modifier = Modifier.size(64.dp), // Size of icon
+                tint = MaterialTheme.colorScheme.error // Use error color from theme
+            )
+
+            // Space between icon and text
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Error title
+            Text(
+                text = "Oops! Something went wrong",
+                style = MaterialTheme. typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+
+            // Space between title and message
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Error message
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), // Slightly transparent
+                textAlign = TextAlign.Center
+            )
+
+            // Space between message and button
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Retry button
+            Button(
+                onClick = onRetry // Call the retry callback when clicked
+            ) {
+                Text(text = "Retry")
+            }
+        }
+    }
+}
+
+/**
+ * Preview for ErrorScreen in Android Studio
+ */
+@Preview(showBackground = true)
+@Composable
+fun ErrorScreenPreview() {
+    ErrorScreen(
+        message = "No internet connection. Please check your network settings.",
+        onRetry = {}
+    )
+}
+
+
+screens/LoadingScreen.kt
+package com.example.todos.ui.screens
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation. layout.Column
+import androidx.compose.foundation. layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose. foundation.layout.height
+import androidx.compose.foundation. layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose. material3.Text
+import androidx. compose.runtime.Composable
+import androidx.compose.ui. Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+/**
+ * Separate composable for Loading screen
+ * Displays a circular progress indicator with text
+ */
+@Composable
+fun LoadingScreen(
+    modifier: Modifier = Modifier
+) {
+    // Box centers its content in the middle of the screen
+    Box(
+        modifier = modifier. fillMaxSize(), // Fill entire screen
+        contentAlignment = Alignment.Center // Center content
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally // Center items horizontally
+        ) {
+            // Circular progress indicator (spinning loader)
+            CircularProgressIndicator(
+                modifier = Modifier. size(64.dp), // Size of the progress indicator
+                color = MaterialTheme.colorScheme.primary // Use theme color
+            )
+
+            // Space between loader and text
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Loading text
+            Text(
+                text = "Loading users...",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+/**
+ * Preview for LoadingScreen in Android Studio
+ */
+@Preview(showBackground = true)
+@Composable
+fun LoadingScreenPreview() {
+    LoadingScreen()
+}
+
+
+MainScreen.kt
+package com.example.todos.ui.screens
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose. foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx. compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.todos.domain.UserState
+import com.example.todos.ui.viewmodel.UserViewModel
+
+
+/**
+ * Main screen that orchestrates the UI based on state
+ * Observes the StateFlow from ViewModel and displays appropriate screen
+ */
+@OptIn(ExperimentalMaterial3Api::class) // TopAppBar requires opt-in
+@Composable
+fun MainScreen(
+    viewModel: UserViewModel = viewModel() // Get or create ViewModel
+) {
+    // Collect state from ViewModel's StateFlow
+    // collectAsStateWithLifecycle is lifecycle-aware - stops collecting when inactive
+    val userState by viewModel.userState.collectAsStateWithLifecycle()
+
+    // Scaffold provides basic Material Design layout structure
+    // Includes TopBar, BottomBar, FAB slots
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            // Top app bar with title
+            TopAppBar(
+                title = {
+                    Text(text = "JSONPlaceholder Users")
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme. primary,
+                    titleContentColor = MaterialTheme.colorScheme. onPrimary
+                )
+            )
+        }
+    ) { paddingValues ->
+        // When statement handles different states
+        // Smart casting automatically casts to specific state type
+        when (val state = userState) {
+            // Loading state - show loading screen
+            is UserState.Loading -> {
+                LoadingScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues) // Apply scaffold padding
+                )
+            }
+
+            // Success state - show user list
+            is UserState.Success -> {
+                UserListScreen(
+                    users = state.users, // Get users from Success state
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues) // Apply scaffold padding
+                )
+            }
+
+            // Error state - show error screen
+            is UserState.Error -> {
+                ErrorScreen(
+                    message = state.message, // Get error message from Error state
+                    onRetry = { viewModel.retry() }, // Call retry on ViewModel
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues) // Apply scaffold padding
+                )
+            }
+        }
+    }
+}
+
+screens/UserListScreen.kt
+package com.example.todos.ui.screens
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout. PaddingValues
+import androidx. compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose. foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose. foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx. compose.material3.MaterialTheme
+import androidx.compose. material3.Text
+import androidx. compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui. text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.todos.data.model.Address
+import com.example.todos.data.model. Company
+import com.example.todos.data.model. Geo
+import com.example.todos.data.model. User
+
+/**
+ * Main screen displaying the list of users
+ * Uses LazyColumn for performance - only renders visible items
+ *
+ * @param users List of users to display
+ */
+@Composable
+fun UserListScreen(
+    users: List<User>,
+    modifier: Modifier = Modifier
+) {
+    // LazyColumn is like RecyclerView - only composes visible items
+    // Perfect for large lists for better performance
+    LazyColumn(
+        modifier = modifier.fillMaxSize(), // Fill entire screen
+        contentPadding = PaddingValues(16.dp), // Padding around the list
+        verticalArrangement = Arrangement.spacedBy(12.dp) // Space between items
+    ) {
+        // items() is a LazyColumn DSL that creates items from a list
+        // key = { it.id } helps with recomposition optimization
+        items(
+            items = users,
+            key = { user -> user.id } // Unique key for each item
+        ) { user ->
+            // Composable for each user item
+            UserItem(user = user)
+        }
+    }
+}
+
+/**
+ * Composable for individual user card
+ * Displays user information in a Material Design card
+ *
+ * @param user User object to display
+ */
+@Composable
+fun UserItem(
+    user: User,
+    modifier: Modifier = Modifier
+) {
+    // Card provides elevation and shape
+    Card(
+        modifier = modifier. fillMaxWidth(), // Card fills width of parent
+        elevation = CardDefaults. cardElevation(
+            defaultElevation = 4.dp // Elevation (shadow) of card
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme. colorScheme.surface // Card background color
+        )
+    ) {
+        // Column arranges children vertically
+        Column(
+            modifier = Modifier. padding(16.dp) // Padding inside card
+        ) {
+            // User name - bold and larger text
+            Text(
+                text = user.name,
+                style = MaterialTheme. typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme. onSurface
+            )
+
+            // Username - smaller text
+            Text(
+                text = "@${user.username}",
+                style = MaterialTheme.typography. bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) // Slightly transparent
+            )
+
+            // Email with icon-like prefix
+            Text(
+                text = "📧 ${user.email}",
+                style = MaterialTheme. typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            // Phone with icon-like prefix
+            Text(
+                text = "📞 ${user.phone}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            // City with icon-like prefix
+            Text(
+                text = "📍 ${user.address.city}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            // Company name with icon-like prefix
+            Text(
+                text = "🏢 ${user.company.name}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme. colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Preview for UserItem in Android Studio
+ */
+@Preview(showBackground = true)
+@Composable
+fun UserItemPreview() {
+    val sampleUser = User(
+        id = 1,
+        name = "Leanne Graham",
+        username = "Bret",
+        email = "leanne@example.com",
+        phone = "1-770-736-8031",
+        website = "hildegard.org",
+        address = Address(
+            street = "Kulas Light",
+            suite = "Apt. 556",
+            city = "Gwenborough",
+            zipcode = "92998-3874",
+            geo = Geo(lat = "-37.3159", lng = "81.1496")
+        ),
+        company = Company(
+            name = "Romaguera-Crona",
+            catchPhrase = "Multi-layered client-server neural-net",
+            bs = "harness real-time e-markets"
+        )
+    )
+
+    UserItem(user = sampleUser)
+}

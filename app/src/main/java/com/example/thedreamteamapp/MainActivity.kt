@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,12 +68,11 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "home"
                     ) {
-                        composable("home") {
-                            DreamTeamScreen(navController)
-                        }
-                        composable("edward") {
-                            EdwardProfileScreen()
-                        }
+                        composable("home") { DreamTeamScreen(navController) }
+                        composable("edward") { EdwardProfileScreen() }
+                        composable("clarence") { ClarenceProfileScreen() }
+                        composable("mollejon") { MollejonProfileScreen() }
+                        composable("radyn") { MalolesProfileScreen() } // Added Route
                     }
                 }
             }
@@ -90,7 +88,7 @@ fun DreamTeamScreen(navController: NavHostController) {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFF3F8FF), 
+                        Color(0xFFF3F8FF),
                         Color(0xFFD7E8FF),
                         Color(0xFFFDFBFF)
                     )
@@ -106,7 +104,7 @@ fun DreamTeamScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            // Header
+
             Text(
                 text = "THE DREAM TEAM APP",
                 fontSize = 26.sp,
@@ -132,30 +130,31 @@ fun DreamTeamScreen(navController: NavHostController) {
                 ProfileNavButton(
                     name = "Edward Moro",
                     subtitle = "Git Manager",
-                    imageRes = (R.drawable.ejpic),
+                    imageRes = R.drawable.ejpic,
                     accentColor = AccentBlue,
                     onClick = { navController.navigate("edward") }
                 )
                 ProfileNavButton(
-                    name = "Student 2",
-                    subtitle = "Bio Screen 2",
-                    imageRes = android.R.drawable.ic_menu_gallery,
+                    name = "Clarence Montealegre",
+                    subtitle = "Documentation/QA",
+                    imageRes = R.drawable.montipic,
                     accentColor = Color(0xFF4F46E5),
-                    onClick = { }
+                    onClick = { navController.navigate("clarence") }
                 )
                 ProfileNavButton(
-                    name = "Student 3",
-                    subtitle = "Bio Screen 3",
-                    imageRes = android.R.drawable.ic_menu_gallery,
+                    name = "Israel Mollejon",
+                    subtitle = "Feature Developer",
+                    imageRes = R.drawable.israelmollejonpic,
                     accentColor = Color(0xFF0EA5E9),
-                    onClick = { }
+                    onClick = { navController.navigate("mollejon")}
                 )
+                // Fixed Radyn's Button
                 ProfileNavButton(
-                    name = "Student 4",
-                    subtitle = "Bio Screen 4",
-                    imageRes = android.R.drawable.ic_menu_gallery,
+                    name = "Radyn Ryu Maloles",
+                    subtitle = "UI/UX Designer",
+                    imageRes = R.drawable.radynryupic,
                     accentColor = Color(0xFF10B981),
-                    onClick = { }
+                    onClick = { navController.navigate("radyn") }
                 )
                 ProfileNavButton(
                     name = "Student 5",
@@ -241,14 +240,5 @@ fun ProfileNavButton(
                 )
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DreamTeamPreview() {
-    TheDreamTeamAppTheme {
-        DreamTeamScreen(rememberNavController())
     }
 }
