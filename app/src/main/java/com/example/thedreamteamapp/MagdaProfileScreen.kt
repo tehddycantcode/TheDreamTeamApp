@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ClarenceProfileScreen() {
+fun MagdaProfileScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,8 +55,8 @@ fun ClarenceProfileScreen() {
                 .background(AvatarPlaceholder)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.montipic),
-                contentDescription = "Clarence Picture",
+                painter = painterResource(id = R.drawable.magdapic),
+                contentDescription = "Shania Profile Picture",
                 modifier = Modifier.matchParentSize(),
                 contentScale = ContentScale.Crop
             )
@@ -65,13 +65,13 @@ fun ClarenceProfileScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Clarence Montealegre",
+            text = "Shania Magda",
             fontSize = 22.sp,
             fontWeight = FontWeight.SemiBold
         )
 
         Text(
-            text = "Documentation/QA",
+            text = "Team Leader",
             fontSize = 15.sp,
             modifier = Modifier.padding(top = 4.dp),
             textAlign = TextAlign.Center
@@ -92,16 +92,16 @@ fun ClarenceProfileScreen() {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "About Clarence",
+                    text = "About Shania",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "Clarence is responsible for documenting the project and ensuring quality through comprehensive testing.",
+                    text = "Shania is responsible for guiding the team’s vision, facilitating communication, and ensuring the project stays on track.",
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "He maintains clear documentation, writes test cases, and ensures the app meets quality standards before release.",
+                    text = "She coordinates tasks, manages timelines, and supports team members to help them perform at their best.",
                     fontSize = 14.sp
                 )
             }
@@ -112,7 +112,7 @@ fun ClarenceProfileScreen() {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF4FF)),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFE6F4EA)), // Green tint for UI/UX
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Column(
@@ -127,9 +127,9 @@ fun ClarenceProfileScreen() {
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "• Writing and maintaining project documentation\n" +
-                            "• Creating test cases and performing quality assurance\n" +
-                            "• Tracking bugs and ensuring they are resolved",
+                    text = "• Setting project goals and priorities\n" +
+                            "• Facilitating team meetings and decision-making\n" +
+                            "• Monitoring progress and removing blockers\n",
                     fontSize = 13.sp
                 )
             }
@@ -144,11 +144,11 @@ fun ClarenceProfileScreen() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Favorite Tool:\nMarkdown & Testing Frameworks",
+                text = "Favorite Tool:\nJira & Slack",
                 fontSize = 13.sp
             )
             Text(
-                text = "Status:\nEnsuring quality",
+                text = "Status:\nLeading the way",
                 fontSize = 13.sp,
                 textAlign = TextAlign.End
             )
