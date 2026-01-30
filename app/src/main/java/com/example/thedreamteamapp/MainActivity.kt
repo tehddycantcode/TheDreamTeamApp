@@ -68,7 +68,13 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = navController,
                         startDestination = "home"
-                    ) {
+                    ) {x
+                        composable("home") { DreamTeamScreen(navController) }
+                        composable("edward") { EdwardProfileScreen() }
+                        composable("clarence") { ClarenceProfileScreen() }
+                        composable("mollejon") { MollejonProfileScreen() }
+                        composable("radyn") { MalolesProfileScreen() }
+                        composable("shania") { MagdaProfileScreen() }
                         composable("home") {
                             DreamTeamScreen(navController)
                         }
@@ -77,6 +83,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("mollejon") {
                             MollejonProfileScreen()
+                        }
+                        composable("magda") {
+                            MagdaProfileScreen()
                         }
                     }
                 }
@@ -161,11 +170,16 @@ fun DreamTeamScreen(navController: NavHostController) {
                     onClick = { }
                 )
                 ProfileNavButton(
-                    name = "Student 5",
-                    subtitle = "Bio Screen 5",
-                    imageRes = android.R.drawable.ic_menu_gallery,
+                    name = "Radyn Ryu Maloles",
+                    subtitle = "UI/UX Designer",
+                    imageRes = R.drawable.radynryupic,
+                    accentColor = Color(0xFF10B981),
+                    onClick = { navController.navigate("radyn") }
+                    name = "Shania Magda",
+                    subtitle = "Aspiring Web Developer",
+                    imageRes = R.drawable.magdapic,
                     accentColor = Color(0xFFEC4899),
-                    onClick = { }
+                    onClick = { navController.navigate("magda") }
                 )
             }
         }
