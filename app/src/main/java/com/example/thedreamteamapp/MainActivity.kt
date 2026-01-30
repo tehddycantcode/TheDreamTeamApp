@@ -54,12 +54,27 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "home"
                     ) {
+<<<<<<< Updated upstream
                         composable("home") { DreamTeamScreen(navController) }
                         composable("edward") { EdwardProfileScreen() }
                         composable("clarence") { ClarenceProfileScreen() }
                         composable("mollejon") { MollejonProfileScreen() }
                         composable("radyn") { MalolesProfileScreen() }
                         composable("shania") { MagdaProfileScreen() }
+=======
+                        composable("home") {
+                            DreamTeamScreen(navController)
+                        }
+                        composable("edward") {
+                            EdwardProfileScreen()
+                        }
+                        composable("mollejon") {
+                            MollejonProfileScreen()
+                        }
+                        composable("magda") {
+                            MagdaProfileScreen()
+                        }
+>>>>>>> Stashed changes
                     }
                 }
             }
@@ -142,11 +157,19 @@ fun DreamTeamScreen(navController: NavHostController) {
                 )
                 // UI/UX DESIGNER
                 ProfileNavButton(
+<<<<<<< Updated upstream
                     name = "Radyn Ryu Maloles",
                     subtitle = "UI/UX Designer",
                     imageRes = R.drawable.radynryupic,
                     accentColor = Color(0xFF10B981),
                     onClick = { navController.navigate("radyn") }
+=======
+                    name = "Shania Magda",
+                    subtitle = "Aspiring Web Developer",
+                    imageRes = R.drawable.magdapic,
+                    accentColor = Color(0xFFEC4899),
+                    onClick = { navController.navigate("magda") }
+>>>>>>> Stashed changes
                 )
             }
         }
